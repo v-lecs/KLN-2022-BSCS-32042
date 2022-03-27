@@ -9,15 +9,19 @@ import java.util.Scanner;
 public class App 
 {
 
-    public App(String message){
+    public static void clientcon(String message){
         try{
             Socket s= new Socket("127.0.0.1", 60000);
             DataOutputStream dout = new DataOutputStream(s.getOutputStream());
             dout.writeUTF(message);
-            dout.flush();
-            dout.close();
-            s.close();
+            if (message.equalsIgnoreCase("over")) {
+                dout.flush();
+                dout.close();
+                s.close();
+                return;
+            }
             System.out.println("message sent");
+
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -28,12 +32,19 @@ public class App
         try{
 
             Scanner in = new Scanner(System.in);
-            System.out.println("Type something to send");
-            String message = in.nextLine();
-            new App(message);
+            String message = new String();
+            while (!message.equalsIgnoreCase("over")) {
+                System.out.println("Type something to send");
+                message = in.nextLine();
+                if (message.isEmpty())
+                    continue;
+                clientcon(message);
+            }
+            System.out.println("Session End");
 
         }catch (Exception e){
             System.out.println(e.getMessage());
+
         }
     }
 }
