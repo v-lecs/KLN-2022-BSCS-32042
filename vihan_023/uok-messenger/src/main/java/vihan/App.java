@@ -2,30 +2,49 @@ import java.util.*;
 import java.io.*;
 import java.net.*;
 
-
 public class App
 {
-    	public static void main(String[] args)
+
+	public static void main( String[] args )
 	{
-                try
-                {
+       		try
+		{
+			Scanner sc = new Scanner(System.in);
+			String msg = new String();
 
-                	Scanner sc= new Scanner(System.in);
-                	System.out.print("Enter a message: ");
-                	String msg= sc.nextLine();
+			while (!msg.equalsIgnoreCase("exit"))
+			{
+                		System.out.println("Enter a message: ");
+                		msg = sc.nextLine();
 
-                        Socket s = new Socket("127.0.0.1", 60000);
-                        DataOutputStream dout = new DataOutputStream(s.getOutputStream());
-                        dout.writeUTF(msg);
-                        dout.flush();
-                        dout.close();
-                        s.close();
-                }
+				try
+				{
+            				Socket s= new Socket("127.0.0.1", 60000);
+            				DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+            				dout.writeUTF(msg);
+            				if (msg.equalsIgnoreCase("exit"))
+					{
+                				dout.flush();
+                				dout.close();
+                				s.close();
+            				}
 
-                catch (Exception e)
-                {
-                        System.out.println(e);
-                }
+        			}
 
-    	}
+			        catch (Exception e)
+				{
+            				System.out.println(e.getMessage());
+                		}
+
+            		}
+
+        	}
+
+
+		catch (Exception e)
+		{
+            		System.out.println(e.getMessage());
+
+        	}
+	}
 }
