@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 
 
-public class App 
+public class App
 {
 
     public static void clientcon(String message){
@@ -15,10 +15,14 @@ public class App
             Socket s= new Socket("127.0.0.1", 60000);
             DataOutputStream dout = new DataOutputStream(s.getOutputStream());
             dout.writeUTF(message);
-            dout.flush();
-            dout.close();
-            s.close();
+            if (message.equalsIgnoreCase("over")) {
+                dout.flush();
+                dout.close();
+                s.close();
+                return;
+            }
             System.out.println("message sent");
+
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -31,9 +35,15 @@ public class App
             server.start();
             Scanner in = new Scanner(System.in);
             String message = new String();
-            System.out.println("Type something to send");
-            message = in.nextLine();
-            clientcon(message);
+            while (!message.equalsIgnoreCase("over")) {
+                System.out.println("Type something to send (send over to close connection)");
+                message = in.nextLine();
+                if (message.isEmpty())
+                    continue;
+                clientcon(message);
+            }
+            System.out.println("Session End");
+
         }catch (Exception e){
             System.out.println(e.getMessage());
 
