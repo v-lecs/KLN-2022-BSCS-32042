@@ -8,32 +8,61 @@ public class App
 {
 
 	public static void main(String[] args)
-		{
-			Scanner scanner = new Scanner(System.in);
-                	String message = new String();
+	{
+		new Server().start();
+		new Client().start();
+	}
 
+}
+
+
+class Client extends Thread
+{
+		public void run()
+		{
                 	try
                 	{
-				while(!message.equalsIgnoreCase("end"))
-				{
-                			System.out.print("Enter a message: ");
-					message =  scanner.nextLine();
 
-                        		Socket skt = new Socket("127.0.0.1", 60000);
-                        		DataOutputStream dout = new DataOutputStream(skt.getOutputStream());
-                        		dout.writeUTF(message);
+        	        	Scanner scanner= new Scanner(System.in);
+                		System.out.print("Enter a message: ");
 
-					if(!message.equalsIgnoreCase("end"))
-					{
-                        			dout.flush();
-                        			dout.close();
-                        			skt.close();
-                			}
-				}
-			}
-	                catch (Exception e)
-        	        {
-                	        System.out.println(e);
-			}
-		}
+                		String message= scanner.nextLine();
+                   		Socket skt = new Socket("127.0.0.1", 60000);
+
+                        	DataOutputStream dout = new DataOutputStream(skt.getOutputStream());
+                        	dout.writeUTF(message);
+                        	dout.flush();
+                        	dout.close();
+                        	skt.close();
+                	}
+
+                	catch (Exception e)
+                	{
+                        	System.out.println(e);
+                	}
+
+    		}
+}
+
+class Server extends Thread
+{
+	public void run()
+	{
+		try
+                {
+                        ServerSocket serverSocket = new ServerSocket(60000);
+                        Socket skt = serverSocket.accept();
+
+                        DataInputStream dis = new DataInputStream(skt.getInputStream());
+                        String strng = dis.readUTF();
+
+                        System.out.println("message= " + strng);
+                        serverSocket.close();
+                }
+
+                catch (Exception e)
+                {
+                        System.out.println(e);
+                }
+        }
 }
