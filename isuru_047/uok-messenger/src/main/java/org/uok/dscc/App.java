@@ -17,28 +17,35 @@ public class App
 
 class Client extends Thread
 {
-		public void run()
+	public void run()
+	{
+		Scanner scan= new Scanner(System.in);
+                String message = new String();
+		System.out.print("Enter the message: ");
+
+                try
+                {
+		while(!message.equalsIgnoreCase("end"))
 		{
-                	try
-                	{
+                        message =  scan.nextLine();
+                        Socket soc = new Socket("127.0.0.1", 50000);
+                        DataOutputStream dout = new DataOutputStream(soc.getOutputStream());
+                        dout.writeUTF(message);
 
-        	        	Scanner scan= new Scanner(System.in);
-                		System.out.print("Enter the message: ");
-                		String message= scan.nextLine();
-                   		Socket soc = new Socket("127.0.0.1", 60000);
-                        	DataOutputStream dout = new DataOutputStream(soc.getOutputStream());
-                        	dout.writeUTF(message);
-                        	dout.flush();
-                        	dout.close();
-                        	soc.close();
-                	}
+		if(!message.equalsIgnoreCase("end"))
+		{
+                        dout.flush();
+                        dout.close();
+                        soc.close();
+                }
+		}
+		}
+                catch (Exception e)
+                {
+                        System.out.println(e);
+                }
 
-                	catch (Exception e)
-                	{
-                        	System.out.println(e);
-                	}
-
-    		}
+    	}
 }
 
 class Server extends Thread
@@ -46,19 +53,33 @@ class Server extends Thread
 	public void run()
 	{
 		try
-                {
-                        ServerSocket ssoc = new ServerSocket(60000);
-                        Socket soc = ssoc.accept();
-                        DataInputStream din = new DataInputStream(soc.getInputStream());
-                        String str = din.readUTF();
-                        System.out.println("message= " + str);
-                        ssoc.close();
-                }
+		{
+            		ServerSocket ssoc = new ServerSocket(50000);
+			String str = new String();
+            		while (!str.equalsIgnoreCase("end"))
+			{
+                		Socket soc = ssoc.accept();
+                		DataInputStream din = new DataInputStream(soc.getInputStream());
+                		str = din.readUTF();
 
-                catch (Exception e)
-                {
-                        System.out.println(e);
-                }
+				if (str.equalsIgnoreCase("end"))
+				{
+                   	 		break;
+				}
 
-        }
+                		System.out.println("message= " +str);
+				System.out.print("\n");
+				System.out.print("Enter the message: ");
+                		din.close();
+            		}
+
+	            	ssoc.close();
+        	}
+
+
+		catch (Exception e)
+		{
+            		System.out.println(e);
+        	}
+    	}
 }
