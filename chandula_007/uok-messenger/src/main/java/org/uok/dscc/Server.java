@@ -9,8 +9,9 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try{
+            AppProperties appProperties = AppProperties.getInstance();
             String str;
-            ServerSocket ss = new ServerSocket(60000);
+            ServerSocket ss = new ServerSocket(Integer.parseInt(appProperties.getProperty("Server_port")));
             System.out.println("Server Started");
 
             while (true) {
@@ -19,7 +20,7 @@ public class Server implements Runnable {
                 str = dis.readUTF();
                 if (str.equalsIgnoreCase("over"))
                     break;
-                System.out.println("message = " +str);
+                System.out.println(str);
                 dis.close();
             }
             ss.close();
